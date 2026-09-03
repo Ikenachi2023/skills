@@ -31,9 +31,12 @@ skill-creatorを試すために適当に作ったスキル。`~/.claude/skills/`
 
 ## インストール
 
-使いたいスキルのディレクトリだけを `~/.claude/skills/`（個人用）または `<project>/.claude/skills/`（プロジェクト用）にコピーしてください。
+このリポジトリをcloneし、リポジトリのルートディレクトリで、使いたいスキルのディレクトリだけを `~/.claude/skills/`（個人用）または `<project>/.claude/skills/`（プロジェクト用）にコピーしてください。
 
 ```bash
+git clone https://github.com/Ikenachi2023/skills.git
+cd skills
+
 # commit
 cp -r commit ~/.claude/skills/
 
