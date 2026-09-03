@@ -1,0 +1,49 @@
+{
+  "skill_name": "commit",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "You are Claude Code working in the git repo at evals/fixtures/typo-fix (a small Python project). Here is the conversation so far in this session:\n\nUser: 「greet.pyのコメントのtypoを直しておいて。retunsになってる」\nAssistant: (found the typo on the comment line and fixed 'retuns' to 'returns', then staged the file with `git add greet.py`)\nUser: 「ありがとう、じゃあコミットして」\n\nNow run /commit.",
+      "expected_output": "A commit is created for the staged greet.py change. The message has a short title plus all three sections: 【実装内容】 briefly notes the comment typo fix; since this trivial fix involved no real design decision and no substantive back-and-forth, 【決定事項】 and 【対話履歴】 should both read 特になし (or an equivalent 'nothing to report') rather than being padded out with invented content.",
+      "files": [],
+      "assertions": [
+        {"text": "A commit was actually created (git log shows a new commit on top of the initial one)"},
+        {"text": "Commit message contains all three section headers: 【実装内容】, 【決定事項】, 【対話履歴】"},
+        {"text": "【実装内容】 mentions the typo/comment fix in greet.py, not a fabricated bigger change"},
+        {"text": "【決定事項】 says there was nothing notable to decide (e.g. 特になし), rather than inventing a decision"},
+        {"text": "【対話履歴】 says there was no meaningful back-and-forth (e.g. 特になし), rather than inventing dialogue"},
+        {"text": "Commit message includes a Co-Authored-By: Claude line"}
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "You are Claude Code working in the git repo at evals/fixtures/auth-decision (a small Flask project). Here is the conversation so far in this session:\n\nUser: 「このAPIに認証を追加したい。セッションベースとJWT、どっちがいいと思う?」\nAssistant: (explained tradeoffs: session-based is simpler and revocable but needs server-side storage; JWT is stateless and works well if we might split into multiple services later, but revocation is harder)\nUser: 「今後マイクロサービス化する可能性があるから、JWTでいこう。有効期限は短めにしておいて、12時間くらいで」\nAssistant: (implemented auth.py with issue_token/verify_token using PyJWT, HS256, 12-hour expiry, staged the new file with `git add auth.py`)\nUser: 「良さそう、コミットお願い」\n\nNow run /commit.",
+      "expected_output": "A commit is created for the staged auth.py addition. 【実装内容】 concisely describes the new JWT issue/verify functions. 【決定事項】 captures the durable decision: JWT chosen over session-based auth because of anticipated microservice split, with a 12-hour token expiry — information a future contributor would need before changing the auth approach. 【対話履歴】 reflects the actual back-and-forth: the user asked to compare session vs JWT, the tradeoffs that were laid out, and the user's resulting choice and reasoning (future microservices, short expiry).",
+      "files": [],
+      "assertions": [
+        {"text": "A commit was actually created (git log shows a new commit on top of the initial one)"},
+        {"text": "Commit message contains all three section headers: 【実装内容】, 【決定事項】, 【対話履歴】"},
+        {"text": "【実装内容】 describes the new auth.py (issue_token/verify_token, JWT/PyJWT)"},
+        {"text": "【決定事項】 states JWT was chosen over session-based auth, and gives the reason (possible future microservice split)"},
+        {"text": "【決定事項】 or 【対話履歴】 mentions the 12-hour token expiry"},
+        {"text": "【対話履歴】 reflects that the user was asked to compare/chose between session-based and JWT, not just a restatement of the final implementation"},
+        {"text": "Commit message includes a Co-Authored-By: Claude line"}
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "You are Claude Code working in the git repo at evals/fixtures/pagination-refactor. The last commit ('Add offset-based pagination') landed a couple weeks ago. Here is the conversation so far in this session, which covers a few different topics before getting to the actual change:\n\nUser: 「ちょっと雑談だけど、来週のチームランチどこにする?」\nAssistant: (made a couple of casual suggestions)\nUser: 「あ、あと明日休むかもしれないので、その場合はレビュー遅れるかも」\nAssistant: (acknowledged)\nUser: 「本題なんだけど、list_itemsのページネーション、今offsetベースだけど大きいテーブルだと遅くなるから、cursorベースに変えたい」\nAssistant: (explained that cursor-based pagination avoids the OFFSET scan cost and is more stable under concurrent inserts, but requires a stable sort key and can't jump to an arbitrary page number)\nUser: 「ページジャンプは使ってないから問題ない。cursorベースで実装して」\nAssistant: (rewrote list_items to take a cursor param and return (page, next_cursor), staged api.py with `git add api.py`)\nUser: 「ok、コミットしといて」\n\nNow run /commit.",
+      "expected_output": "A commit is created for the staged api.py change. 【実装内容】 briefly describes switching list_items from offset-based to cursor-based pagination. 【決定事項】 captures that cursor-based pagination was chosen over offset-based for performance/stability on large tables, and notes the accepted tradeoff (no arbitrary page jumping) since page jump isn't used. 【対話履歴】 summarizes only the relevant discussion (the offset-vs-cursor tradeoff and the user's decision) and does not include the unrelated small talk about team lunch or the user's schedule.",
+      "files": [],
+      "assertions": [
+        {"text": "A commit was actually created (git log shows a new commit on top of the initial one)"},
+        {"text": "Commit message contains all three section headers: 【実装内容】, 【決定事項】, 【対話履歴】"},
+        {"text": "【実装内容】 describes switching list_items from offset-based to cursor-based pagination"},
+        {"text": "【決定事項】 states the reason for choosing cursor-based (performance/stability on large tables) and the accepted tradeoff (no arbitrary page jump)"},
+        {"text": "【対話履歴】 does NOT mention the unrelated team-lunch or day-off small talk"},
+        {"text": "【対話履歴】 does capture the actual relevant exchange (offset-vs-cursor tradeoff and the user's decision)"},
+        {"text": "Commit message includes a Co-Authored-By: Claude line"}
+      ]
+    }
+  ]
+}
