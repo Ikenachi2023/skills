@@ -31,10 +31,17 @@ skill-creatorを試すために適当に作ったスキル。`~/.claude/skills/`
 
 ## インストール
 
-各スキルのディレクトリを `~/.claude/skills/`（個人用）または `<project>/.claude/skills/`（プロジェクト用）にコピーしてください。
+使いたいスキルのディレクトリだけを `~/.claude/skills/`（個人用）または `<project>/.claude/skills/`（プロジェクト用）にコピーしてください。
 
 ```bash
-cp -r commit worktree-to-pr skill-help ~/.claude/skills/
+# commit
+cp -r commit ~/.claude/skills/
+
+# skill-help
+cp -r skill-help ~/.claude/skills/
+
+# worktree-to-pr
+cp -r worktree-to-pr ~/.claude/skills/
 ```
 
 ## ライセンス
