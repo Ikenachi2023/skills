@@ -1,4 +1,4 @@
-# my-claude-skills
+# skills
 
 自作の [Claude Code](https://docs.claude.com/claude-code) スキル集です。
 
