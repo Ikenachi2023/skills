@@ -1,6 +1,6 @@
 ---
 name: commit
-description: Create a git commit whose message always has three fixed sections — 【実装内容】(what changed), 【決定事項】(decisions worth remembering for future development), and 【対話履歴】(the user's questions and how they were resolved in conversation). Use this whenever the user runs /commit, or asks to "commit this", "コミットして", or otherwise wants their work committed — this skill's structured format is the expected commit style for this user and should be used instead of a plain one-line commit message, even if they don't spell out the three sections explicitly.
+description: Create a git commit whose message always has three fixed sections — Implementation (what changed), Decisions (decisions worth remembering for future development), and Discussion (the user's questions and how they were resolved in conversation). Use this whenever the user runs /commit, or asks to "commit this", "コミットして", or otherwise wants their work committed — this skill's structured format is the expected commit style for this user and should be used instead of a plain one-line commit message, even if they don't spell out the three sections explicitly.
 ---
 
 # commit
@@ -20,17 +20,17 @@ the heading — a consistent shape makes the log skimmable and makes "nothing
 happened here" a meaningful, greppable signal rather than an absence):
 
 ```
-<Title line: short, imperative, describes the change>
+<type>: <short, imperative title describing the change>
 
-【実装内容】
+## Implementation
 <What was implemented/changed, concisely — a few lines, not a diff narration>
 
-【決定事項】
+## Decisions
 <Decisions made during this work that matter for future development —
 architecture choices, rejected alternatives, constraints discovered, naming
 conventions settled on. Write 特になし if nothing rose to that level.>
 
-【対話履歴】
+## Discussion
 <Q&A形式（Q: ... / A: ...）で、何を問い、何が決まったかを記録する。
 Write 特になし if the work proceeded without any such back-and-forth.>
 
@@ -38,28 +38,42 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 ```
 
 Always pass the message via a heredoc (see the repo-wide git commit
-instructions) so the multi-line structure and Japanese brackets survive
-intact.
+instructions) so the multi-line structure survives intact.
+
+### Title prefix
+
+Prefix the title with a Conventional Commits-style type, chosen from the
+actual diff rather than defaulted to `fix:`:
+
+- `fix:` — a bug fix
+- `feat:` — new functionality
+- `refactor:` — restructuring without behavior change
+- `docs:` — documentation/comments only
+- `chore:` — tooling, config, dependencies, cleanup
+- `test:` — test-only changes
+
+Pick whichever fits the diff; when a change spans types, pick the one that
+best describes its main intent.
 
 ## Filling in each section
 
-**【実装内容】** comes from `git diff --staged` (or `git diff` if nothing is
+**Implementation** comes from `git diff --staged` (or `git diff` if nothing is
 staged yet) — summarize the change itself, briefly. This is the one section
 that's just describing code, so keep it short; the other two sections are
 where this skill adds value beyond a normal commit message.
 
-**【決定事項】** and **【対話履歴】** come from the conversation, not the
+**Decisions** and **Discussion** come from the conversation, not the
 diff. Look back over the *entire conversation since the previous commit* —
 run `git log -1 --format=%cI` to see when that commit landed, and treat
 everything discussed after that point as in scope. Filter for relevance:
 skip small talk or instructions unrelated to this change, but err toward
 including anything that touches why the code ended up the way it did.
 
-- 決定事項 is about durable decisions — the kind of thing a future
+- **Decisions** is about durable decisions — the kind of thing a future
   contributor (including a future you) would want to know before touching
   this code again. A decision confirmed without much discussion still
   belongs here if it constrains future work.
-- 対話履歴 is about *back-and-forth that shaped the outcome* — a question
+- **Discussion** is about *back-and-forth that shaped the outcome* — a question
   that got weighed against alternatives, a proposal that got pushed back on,
   a direction that changed mid-conversation. A plain instruction-and-done
   exchange ("greet.pyのtypo直して" → fixed) has no such shaping to record,
@@ -77,9 +91,19 @@ including anything that touches why the code ended up the way it did.
 A useful test: if you removed this section, would a future reader lose
 information they'd otherwise have wanted? If not, it's 特になし.
 
+Keep the message light — this is a summary, not a transcript. Compress each
+entry to one line wherever the point survives; don't record every exchange
+that happened, only the ones that changed what the code or the reader's
+understanding ends up being. For instance, a question that was purely
+clarifying ("〇〇って何？" that led to adding an explanatory comment, with no
+alternative weighed) doesn't need its own Q&A pair — fold it into
+Implementation as "わかりにくい箇所にコメントを追加" instead of narrating the
+question-and-answer. Reserve full Q&A pairs for exchanges where a decision
+or direction was actually contested or chosen among alternatives.
+
 These two sections often overlap in substance (a decision usually emerged
-from some dialogue) — that's fine. 決定事項 is the conclusion; 対話履歴 is
-the path that led there.
+from some dialogue) — that's fine. **Decisions** is the conclusion;
+**Discussion** is the path that led there.
 
 ## Staging
 
