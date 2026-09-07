@@ -1,0 +1,23 @@
+{
+  "skill_name": "nanobananer",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "うちのゲームの素材フォルダに、マインクラフト風の石ブロックのテクスチャ画像を生成して置いておいて。",
+      "expected_output": "Detects the project's existing assets/images/ convention (from CLAUDE.md), generates one stone-block texture image via agy safely (project-scoped, no permission bypass), and saves it under assets/images/ with a descriptive filename.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "アプリのロゴ画像を生成して",
+      "expected_output": "Recognizes the request is ambiguous on both style/composition and destination folder (no assets convention exists in this project), and asks the user at least one clarifying question rather than guessing and generating immediately.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "セーブボタン用のアイコンを3パターン生成して",
+      "expected_output": "Generates three distinct icon variants (three separate agy calls, not one call asked for three images), saves them under the project's existing assets/icons/ convention with three distinct filenames, no overwritten files.",
+      "files": []
+    }
+  ]
+}
